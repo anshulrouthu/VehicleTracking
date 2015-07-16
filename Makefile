@@ -16,6 +16,7 @@ OPENCV_LIBS=    -lopencv_core                      \
                 -lopencv_highgui                   \
                 -lopencv_imgproc                   \
                 -lopencv_ml                        \
+                -lopencv_video					   \
 
 ############ ----- Project target ----- ##############
 # change the target to what ever file name you want to build a binary
