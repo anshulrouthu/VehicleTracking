@@ -21,63 +21,67 @@ cv::BackgroundSubtractorMOG2 pMOG2; //MOG2 Background subtractor
 int keyboard;
 
 //function declarations
-void processVideo(char* videoFilename);
+void processVideo(std::string videoFilename);
 
 int main(int argc, char* argv[])
 {
 
-    //create GUI windows
-    namedWindow("Frame");
-    namedWindow("FG Mask MOG");
-    namedWindow("FG Mask MOG 2");
+	//create GUI windows
+	namedWindow("Frame", WINDOW_NORMAL);
+	resizeWindow("Frame", 300,250);
 
-    //create Background Subtractor objects
-   //NOTE HERE!!!!
-    //pMOG= new BackgroundSubtractorMOG(); //MOG approach
-    //pMOG2 = new BackgroundSubtractorMOG2(); //MOG2 approach
+	namedWindow("FG Mask MOG", WINDOW_NORMAL);
+	resizeWindow("FG Mask MOG", 300,250);
 
-    processVideo(argv[1]);
+	namedWindow("FG Mask MOG 2", WINDOW_NORMAL);
+	resizeWindow("FG Mask MOG 2", 300,250);
 
-    //destroy GUI windows
-    destroyAllWindows();
-    return EXIT_SUCCESS;
+	processVideo(argv[1]);
+
+	//destroy GUI windows
+	destroyAllWindows();
+	return EXIT_SUCCESS;
 }
 
-void processVideo(char* videoFilename) {
-    //create the capture object
-    VideoCapture capture(videoFilename);
-    if(!capture.isOpened()){
-        //error in opening the video input
-        cerr << "Unable to open video file: " << videoFilename << endl;
-        exit(EXIT_FAILURE);
-    }
-    //read input data. ESC or 'q' for quitting
-    while( (char)keyboard != 'q' && (char)keyboard != 27 ){
-        //read the current frame
-        if(!capture.read(frame)) {
-            cerr << "Unable to read next frame." << endl;
-            cerr << "Exiting..." << endl;
-            exit(EXIT_FAILURE);
-        }
-        //update the background model
-           //AND HERE!!!
-        pMOG(frame, fgMaskMOG);
-        pMOG2(frame, fgMaskMOG2);
-        //get the frame number and write it on the current frame
-        stringstream ss;
-        rectangle(frame, cv::Point(10, 2), cv::Point(100,20),
-            cv::Scalar(255,255,255), -1);
-        ss << capture.get(CV_CAP_PROP_POS_FRAMES);
-        string frameNumberString = ss.str();
-        putText(frame, frameNumberString.c_str(), cv::Point(15, 15),
-            FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(0,0,0));
-        //show the current frame and the fg masks
-        imshow("Frame", frame);
-        imshow("FG Mask MOG", fgMaskMOG);
-        imshow("FG Mask MOG 2", fgMaskMOG2);
-        //get the input from the keyboard
-        keyboard = waitKey( 30 );
-    }
-    //delete capture object
-    capture.release();
+void processVideo(std::string videoFilename)
+{
+	//create the capture object
+
+	VideoCapture capture(videoFilename); //try to open string, this will attempt to open it as a video file
+
+	if (!capture.isOpened()) //if this fails, try to open as a video camera, through the use of an integer param
+	{
+		capture.open(atoi(videoFilename.c_str()));
+	}
+
+	if (!capture.isOpened())
+	{
+		cerr << "Failed to open a video device or video file!\n" << endl;
+	}
+
+	//read input data. ESC or 'q' for quitting
+	while ((char) keyboard != 'q' && (char) keyboard != 27)
+	{
+		//read the current frame
+		if (!capture.read(frame))
+		{
+			cerr << "Unable to read next frame." << endl;
+			cerr << "Exiting..." << endl;
+			exit(EXIT_FAILURE);
+		}
+		//update the background model
+		//AND HERE!!!
+		pMOG(frame, fgMaskMOG);
+		pMOG2(frame, fgMaskMOG2);
+
+
+		//show the current frame and the fg masks
+		imshow("Frame", frame);
+		imshow("FG Mask MOG", fgMaskMOG);
+		imshow("FG Mask MOG 2", fgMaskMOG2);
+		//get the input from the keyboard
+		keyboard = waitKey(30);
+	}
+	//delete capture object
+	capture.release();
 }
