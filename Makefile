@@ -20,7 +20,7 @@ OPENCV_LIBS=    -lopencv_core                      \
 ############ ----- Project target ----- ##############
 # change the target to what ever file name you want to build a binary
 # this should match with the file name containing main() function
-TARGET:=hello_pi
+TARGET:=color_track
 
 # if you add directories and files in the source dir add each dir below 
 # e.g 
@@ -48,6 +48,7 @@ OBJS:=$(C_SRC:.c=.o) $(CPP_SRC:.cpp=.o)
 
 .PHONY: all
 all: $(BUILD_PATH) $(TARGET)
+	 scp _build/color_track pi@10.30.44.151:
 
 $(BUILD_PATH):
 	       @mkdir -p $@
