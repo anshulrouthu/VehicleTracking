@@ -9,7 +9,7 @@ CC:=$(CROSSPREFIX)gcc
 CXX:=$(CROSSPREFIX)g++
 SYSROOT=$(PROJECT_ROOT)/rpi-sdk/staging
 RPATH:=$(SYSROOT)/usr/lib/
-CFLAGS:= --sysroot=$(SYSROOT) -Wall -Werror -g -O2 -Wl,-rpath=$(RPATH)
+CFLAGS:= --sysroot=$(SYSROOT) -Wall -Werror -g -O2
 
 ############ ------opencv libs ------################
 OPENCV_LIBS=    -lopencv_core                      \
@@ -17,6 +17,7 @@ OPENCV_LIBS=    -lopencv_core                      \
                 -lopencv_imgproc                   \
                 -lopencv_ml                        \
                 -lopencv_video					   \
+                -lopencv_features2d
 
 ############ ----- Project target ----- ##############
 # change the target to what ever file name you want to build a binary
